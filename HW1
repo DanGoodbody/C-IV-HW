@@ -1,0 +1,81 @@
+#include <algorithm>
+#include <deque>
+#include <iostream>
+#include <iterator>
+#include <numeric>
+#include <sstream>
+#include <string>
+#include <vector>     
+
+using namespace std;
+
+struct IntegerSequence
+{
+   IntegerSequence(const int initialValue)
+      : value_(initialValue) {}
+   int operator() () { return ++value_; }
+private: 
+   int value_;
+};
+
+int testDequeFunctionality()
+{   
+   const size_t SIZE = 10;
+   IntegerSequence sequence(0);
+   std::deque<int> demoDeque;   
+   generate_n(back_inserter(demoDeque), SIZE, sequence);
+   return  accumulate(demoDeque.begin(), demoDeque.end(), 0);
+}
+
+string testStringFunctionality()
+{
+   string alphabet("abcdefghijklmnopqrstuvwxyz");
+   transform(alphabet.begin(), alphabet.end(), alphabet.begin(), ::toupper);
+   return alphabet;
+}
+
+bool isEven (const int i) 
+{ 
+   return (i % 2) == 0;
+}
+
+ostringstream  testVectorFunctionality()
+{
+   const int initialArray[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+   const size_t ARRAY_SIZE = sizeof(initialArray) / sizeof(int);
+
+   vector<int> testVector(initialArray, initialArray + ARRAY_SIZE);  
+   partition(testVector.begin(), testVector.end(), isEven);
+
+   sort(testVector.begin(), testVector.begin() + ARRAY_SIZE / 2);
+   sort(testVector.begin() + ARRAY_SIZE / 2, testVector.end());
+
+   ostringstream oStream (std::ostringstream::out);
+   std::ostream_iterator<int> oStreamIter (oStream);
+   copy(testVector.begin(), testVector.end(), oStreamIter);
+   return oStream;
+}
+
+int main()
+{
+   cout << "Test deque functionality.\n";
+   bool testit = testDequeFunctionality() == 55;
+   if (testit == true)
+      cout << "Deque functionality test passed\n\n";
+   else
+      cout << "Deque functionality test failed\n\n";
+
+   cout << "Test string functionality.\n";
+   testit = testStringFunctionality() == "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+   if (testit == true)
+      cout << "String functionality test passed\n\n";
+   else
+      cout << "String functionality test failed\n\n";
+
+   cout << "Test vector functionality.\n";
+   testit = testVectorFunctionality().str() == "24681013579";
+   if (testit == true)
+      cout << "Vector functionality test passed\n\n";
+   else
+      cout << "Vector functionality test failed\n\n";
+}
